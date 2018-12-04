@@ -17,7 +17,7 @@ fn dot(input: (i8, i8, i8), weights: (f64, f64, f64)) -> f64 {
     + input.2 as f64 * weights.2
 }
 
-struct TrainingData {
+struct TeachingData {
     input: (i8, i8, i8),
     expected: i8,
 }
@@ -30,40 +30,49 @@ use rand::distributions::{Range, IndependentSample};
 fn main() {
     let mut rng = rand::thread_rng();
 
-    // Training data provided as an array of TrainingData instances
+    // Teaching data provided as an array of TeachingData instances
 
-    //Implementaion of OR function
-    // let training_data = [
-    //     TrainingData { input: (0, 0, 1), expected: 0 },
-    //     TrainingData { input: (0, 1, 1), expected: 1 },
-    //     TrainingData { input: (1, 0, 1), expected: 1 },
-    //     TrainingData { input: (1, 1, 1), expected: 1 },
+    // Implementaion of a 2-input OR gate
+    // let teaching_data = [
+    //     TeachingData { input: (0, 0, 1), expected: 0 },
+    //     TeachingData { input: (0, 1, 1), expected: 1 },
+    //     TeachingData { input: (1, 0, 1), expected: 1 },
+    //     TeachingData { input: (1, 1, 1), expected: 1 },
     // ];
 
-    //Implementaion of AND function
-    // let training_data = [
-    //     TrainingData { input: (0, 0, 1), expected: 0 },
-    //     TrainingData { input: (0, 1, 1), expected: 0 },
-    //     TrainingData { input: (1, 0, 1), expected: 0 },
-    //     TrainingData { input: (1, 1, 1), expected: 1 },
+    // Implementaion of a 2-input AND gate
+    // let teaching_data = [
+    //     TeachingData { input: (0, 0, 1), expected: 0 },
+    //     TeachingData { input: (0, 1, 1), expected: 0 },
+    //     TeachingData { input: (1, 0, 1), expected: 0 },
+    //     TeachingData { input: (1, 1, 1), expected: 1 },
     // ];
 
-    //Implementaion of NOR function
-    // let training_data = [
-    //     TrainingData { input: (0, 0, 1), expected: 1 },
-    //     TrainingData { input: (0, 1, 1), expected: 0 },
-    //     TrainingData { input: (1, 0, 1), expected: 0 },
-    //     TrainingData { input: (1, 1, 1), expected: 0 },
+    // Implementaion of a 2-input NOR gate
+    // let teaching_data = [
+    //     TeachingData { input: (0, 0, 1), expected: 1 },
+    //     TeachingData { input: (0, 1, 1), expected: 0 },
+    //     TeachingData { input: (1, 0, 1), expected: 0 },
+    //     TeachingData { input: (1, 1, 1), expected: 0 },
     // ];
 
 
-    //Implementaion of NAND function
-    let training_data = [
-        TrainingData { input: (0, 0, 1), expected: 1 },
-        TrainingData { input: (0, 1, 1), expected: 1 },
-        TrainingData { input: (1, 0, 1), expected: 1 },
-        TrainingData { input: (1, 1, 1), expected: 0 },
+    // Implementaion of a 2-input NAND gate
+    let teaching_data = [
+        TeachingData { input: (0, 0, 1), expected: 1 },
+        TeachingData { input: (0, 1, 1), expected: 1 },
+        TeachingData { input: (1, 0, 1), expected: 1 },
+        TeachingData { input: (1, 1, 1), expected: 0 },
     ];
+
+
+    // // Implementation of a 2-input EXOR gate
+    // let teaching_data = [
+    //     TeachingData { input: (0, 0, 1), expected: 0},
+    //     TeachingData { input: (0, 1, 1), expected: 1},
+    //     TeachingData { input: (1, 0, 1), expected: 1},
+    //     TeachingData { input: (1, 1, 1), expected: 0},
+    // ];
 
 
     // Initialize the weight vector with random data between 0 and 1
@@ -76,14 +85,14 @@ fn main() {
 
     // Learning rate is set to 0.2 along with the iteration count to 80
     let eta = 0.2;
-    let n = 100;
+    let n = 10000;
 
-    // Training
-    println!("Starting training phase with {} iterations.\nTraining completed!", n);
+    // Teaching
+    println!("Starting teaching phase with {} iterations.", n);
     for _ in 0..n {
 
-        // Choose a random training sample
-        let &TrainingData { input: x, expected } = rng.choose(&training_data).unwrap();
+        // Choose a random teaching sample
+        let &TeachingData { input: x, expected } = rng.choose(&teaching_data).unwrap();
 
         // Calculate the dot product
         let result = dot(x, w);
@@ -99,7 +108,7 @@ fn main() {
     }
 
     // After n iterations our perceptron should have learned by now.
-    for &TrainingData { input, .. } in &training_data {
+    for &TeachingData { input, .. } in &teaching_data {
         let result = dot(input, w);
         println!("({} :: {}): {:.*} -> {}", input.0, input.1, 8, result, result.heaviside());
     }
